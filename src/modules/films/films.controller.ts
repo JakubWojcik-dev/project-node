@@ -1,15 +1,16 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { FilmsService } from './films.service';
 import { Cache } from 'src/db/db.schema';
-// import { CreateCacheDto } from './dto/createCat.dto';
 
 @Controller()
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
   @Get('films')
-  async getFilms(): Promise<{ count: number; data: any[] }> {
-    return await this.filmsService.getFilms();
+  async getFilms(
+    @Query('count') page?: string,
+  ): Promise<{ count: number; data: any[] }> {
+    return await this.filmsService.getFilms(Number(page));
   }
 
   @Get('films/:id')
