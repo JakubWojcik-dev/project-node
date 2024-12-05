@@ -51,7 +51,7 @@ export class FilmsService {
 
     return pagination
       ? {
-          count: data.data.count,
+          count: pagination,
           data: data.data.results.splice(0, pagination),
         }
       : {
