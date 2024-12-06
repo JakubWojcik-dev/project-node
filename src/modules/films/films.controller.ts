@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { FilmsService } from './films.service';
-import { Cache } from 'src/db/db.schema';
-import { ResponseData } from 'src/types/app';
+import { ResponseData } from '../../types/app';
 
 @Controller()
 export class FilmsController {

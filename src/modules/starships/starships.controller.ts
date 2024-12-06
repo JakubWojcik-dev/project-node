@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { StarshipsService } from './starships.service';
-import { ResponseData } from 'src/types/app';
+import { ResponseData } from '../../types/app';
 
 @Controller()
 export class StarshipsController {

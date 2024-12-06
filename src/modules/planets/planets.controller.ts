@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PlanetsService } from './planets.service';
-import { ResponseData } from 'src/types/app';
+import { ResponseData } from '../../types/app';
 
 @Controller()
 export class PlanetsController {

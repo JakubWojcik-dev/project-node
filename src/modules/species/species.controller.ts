@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { SpeciesService } from './species.service';
-import { ResponseData } from 'src/types/app';
+import { ResponseData } from '../../types/app';
 
 @Controller()
 export class SpeciesController {

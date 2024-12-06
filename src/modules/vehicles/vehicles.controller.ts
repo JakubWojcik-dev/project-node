@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
-import { Cache } from 'src/db/db.schema';
-import { ResponseData } from 'src/types/app';
+import { Cache } from '../../db/db.schema';
+import { ResponseData } from '../../types/app';
 // import { CreateCacheDto } from './dto/createCat.dto';
 
 @Controller()
