@@ -3,18 +3,18 @@ services:
   app:
     build: .
     ports:
-      - '3000:3000'
+      - ${APP_PORT}
     depends_on:
-      - mongo
+      - ${DATABASE_NAME}
     environment:
-      MONGO_URI: mongodb://mongo:27017/nestdb
+      MONGO_URI: mongodb://${DATABASE_NAME}:27017/nestdb
     env_file:
       - .env
   mongo:
-    image: mongo:6
-    container_name: mongo
+    image: ${DATABASE_NAME}:6
+    container_name: ${DATABASE_NAME}
     ports:
-      - '27017:27017'
+      - ${DATABASE_PORT}
     volumes:
       - mongo_data:/data/db
 volumes:
