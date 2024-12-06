@@ -6,7 +6,7 @@ export const findIndexInDb = async (
   const url = `${uri}/${id}`;
   console.log(url);
   let cacheEntry = await connection.findOne({ url: id ? url : uri }).exec();
-  console.log('test12321', cacheEntry);
+
   if (!id) {
     return cacheEntry ? cacheEntry : null;
   }
@@ -27,4 +27,16 @@ export const saveToDb = async (
       { upsert: true, new: true },
     )
     .exec();
+};
+
+export const trimMessage = (data: any): string => {
+  let str: string;
+  data.results.map((element) => {
+    str += element.opening_crawl;
+  });
+  const message = str
+    .replace(/[.,\n\r]/g, ' ')
+    .replace(/ {2,}/g, ' ')
+    .trim();
+  return message;
 };
