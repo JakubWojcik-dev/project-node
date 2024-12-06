@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb } from 'src/helpers';
+import { findIndexInDb, saveToDb, trimMessage } from 'src/helpers';
 import { ConfigService } from '@nestjs/config';
 import { ResponseData } from 'src/types/app';
 
@@ -56,9 +56,9 @@ export class PeopleService {
     return pagination
       ? {
           count: pagination,
-          data: data.data.results.splice(0, pagination),
+          data: data.results.splice(0, pagination),
         }
-      : data.data;
+      : data;
   }
   async getPersonById(id: string): Promise<Response> {
     const url = `${process.env.URL}/people`;
@@ -72,6 +72,67 @@ export class PeopleService {
       return data;
     }
 
-    return data.data;
+    return data;
+  }
+  async getMostCommonPerson(): Promise<Object[]> {
+    const peopleUrl = `${process.env.URL}/people`;
+    const filmsUrl = `${process.env.URL}/films`;
+    let peopleData = await findIndexInDb(peopleUrl, this.cacheModel);
+    let filmsData = await findIndexInDb(filmsUrl, this.cacheModel);
+
+    if (!filmsData) {
+      filmsData = await fetch(filmsUrl).then((response: Response) =>
+        response.json(),
+      );
+      await saveToDb(
+        filmsUrl,
+        {
+          count: filmsData.count,
+          data: filmsData,
+        },
+        this.cacheModel,
+      );
+    }
+
+    if (!peopleData) {
+      peopleData = await fetch(`${peopleUrl}/?page=1`).then(
+        (response: Response) => response.json(),
+      );
+
+      let resultsArray = [...peopleData.results];
+      let page = 1;
+      let count = peopleData.count;
+
+      do {
+        page++;
+        peopleData = await fetch(`${peopleUrl}/?page=${page}`).then(
+          (response: Response) => response.json(),
+        );
+        resultsArray = [...resultsArray, ...peopleData.results];
+      } while (count > page * 10);
+
+      await saveToDb(
+        peopleUrl,
+        {
+          count: count,
+          data: resultsArray,
+        },
+        this.cacheModel,
+      );
+    }
+    const filmsMsg = trimMessage(filmsData);
+
+    let arr: Object[] = [];
+    peopleData.data.map((element) => {
+      const regex = new RegExp(element.name, 'g');
+
+      const count = (filmsMsg.match(regex) || []).length;
+      arr.push({ name: element.name, count: count });
+    });
+    const maxCount = Math.max(...arr.map((o: any) => o.count));
+
+    const filteredObjects = arr.filter((obj: any) => obj.count === maxCount);
+
+    return filteredObjects;
   }
 }

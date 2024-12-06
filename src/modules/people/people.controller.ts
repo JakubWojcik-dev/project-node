@@ -15,4 +15,8 @@ export class PeopleController {
   async getPersonById(@Param('id') id: string): Promise<Response> {
     return await this.peopleService.getPersonById(id);
   }
+  @Get('mostCommonPerson')
+  async getMostCommonPerson(): Promise<Object[]> {
+    return await this.peopleService.getMostCommonPerson();
+  }
 }
