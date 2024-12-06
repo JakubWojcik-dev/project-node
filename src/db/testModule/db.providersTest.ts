@@ -4,6 +4,6 @@ export const databaseTestProviders = [
   {
     provide: 'DATABASE_CONNECTION',
     useFactory: (): Promise<typeof mongoose> =>
-      mongoose.connect('mongodb://localhost/27017:27017'),
+      mongoose.connect(`mongodb://localhost/${process.env.DATABASE_PORT}`),
   },
 ];
