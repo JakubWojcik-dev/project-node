@@ -10,9 +10,8 @@ export const findIndexInDb = async (
     return cacheEntry ? cacheEntry.data : null;
   }
   cacheEntry = await connection.findOne({ url: uri }).exec();
-  console.log(cacheEntry);
-  //console.log('data123', cacheEntry.data.data[Number(id) - 1]);
-  return cacheEntry ? cacheEntry.data.data[Number(id) - 1] : null;
+
+  return cacheEntry ? cacheEntry.data.results[Number(id) - 1] : null;
 };
 
 export const saveToDb = async (
@@ -20,6 +19,7 @@ export const saveToDb = async (
   value: any,
   connection: any,
 ): Promise<void> => {
+  if (value?.detail === 'Not found') return;
   await connection
     .findOneAndUpdate(
       { url: uri },
@@ -30,13 +30,12 @@ export const saveToDb = async (
 };
 
 export const trimMessage = (data: any): string => {
-  let str: string;
+  let str: string = '';
   data.results.map((element) => {
     str += element.opening_crawl;
   });
-  const message = str
-    .replace(/[.,\n\r]/g, ' ')
+  return str
+    .replace(/[!?.,\n\r]/g, ' ')
     .replace(/ {2,}/g, ' ')
     .trim();
-  return message;
 };
