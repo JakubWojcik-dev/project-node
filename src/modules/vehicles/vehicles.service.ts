@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb } from 'src/helpers';
+import { Cache } from '../../db/db.schema';
+import { findIndexInDb, saveToDb } from '../../helpers';
 import { ConfigService } from '@nestjs/config';
-import { ResponseData } from 'src/types/app';
+import { ResponseData } from '../../types/app';
 
 @Injectable()
 export class VehiclesService {
@@ -56,9 +56,9 @@ export class VehiclesService {
     return pagination
       ? {
           count: pagination,
-          data: data.data.results.splice(0, pagination),
+          data: data.results.splice(0, pagination),
         }
-      : data.data;
+      : data;
   }
   async getVehiclesById(id: string): Promise<Response> {
     const url = `${process.env.URL}/vehicles`;

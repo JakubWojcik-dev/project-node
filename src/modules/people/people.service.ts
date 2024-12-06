@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb, trimMessage } from 'src/helpers';
+import { Cache } from '../../db/db.schema';
+import { findIndexInDb, saveToDb, trimMessage } from '../../helpers';
 import { ConfigService } from '@nestjs/config';
-import { ResponseData } from 'src/types/app';
+import { ResponseData } from '../../types/app';
 
 @Injectable()
 export class PeopleService {
@@ -42,7 +42,7 @@ export class PeopleService {
         url,
         {
           count: count,
-          data: resultsArray,
+          results: resultsArray,
         },
         this.cacheModel,
       );
@@ -130,7 +130,6 @@ export class PeopleService {
       arr.push({ name: element.name, count: count });
     });
     const maxCount = Math.max(...arr.map((o: any) => o.count));
-
     const filteredObjects = arr.filter((obj: any) => obj.count === maxCount);
 
     return filteredObjects;

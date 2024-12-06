@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb } from 'src/helpers';
-import { ResponseData } from 'src/types/app';
+import { Cache } from '../../db/db.schema';
+import { findIndexInDb, saveToDb } from '../../helpers';
+import { ResponseData } from '../../types/app';
 
 @Injectable()
 export class SpeciesService {
@@ -29,6 +29,7 @@ export class SpeciesService {
         data = await fetch(`${url}/?page=${page}`).then((response: Response) =>
           response.json(),
         );
+
         resultsArray = [...resultsArray, ...data.results];
       } while (count > page * 10 || pagination > page * 10);
 
@@ -55,9 +56,9 @@ export class SpeciesService {
     return pagination
       ? {
           count: pagination,
-          data: data.data.results.splice(0, pagination),
+          data: data.results.splice(0, pagination),
         }
-      : data.data;
+      : data;
   }
   async getSpeciesById(id: string): Promise<Response> {
     const url = `${process.env.URL}/species`;

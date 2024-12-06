@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb, trimMessage } from 'src/helpers';
-import { ResponseData } from 'src/types/app';
+import { Cache } from '../../db/db.schema';
+import { findIndexInDb, saveToDb, trimMessage } from '../../helpers';
+import { ResponseData } from '../../types/app';
 
 @Injectable()
 export class FilmsService {
@@ -16,7 +16,6 @@ export class FilmsService {
     const filterWords = words
       .map((word) => word.toLowerCase())
       .filter((word) => word !== '');
-    // Count occurrences using an object
     const wordsObject = {};
 
     filterWords.forEach((word) => {
@@ -69,11 +68,11 @@ export class FilmsService {
     return pagination
       ? {
           count: pagination,
-          data: data.data.results.splice(0, pagination),
+          data: data.results.splice(0, pagination),
         }
       : {
-          count: data.data.count,
-          data: data.data.results,
+          count: data.count,
+          data: data.results,
         };
   }
   async getFilmsById(id: string): Promise<Response> {
@@ -87,7 +86,7 @@ export class FilmsService {
       return data;
     }
 
-    return data.data;
+    return data;
   }
 
   async getFilmsOpeningCrawl(): Promise<any[]> {

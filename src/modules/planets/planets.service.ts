@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb } from 'src/helpers';
-import { ResponseData } from 'src/types/app';
+import { Cache } from '../../db/db.schema';
+import { findIndexInDb, saveToDb } from '../../helpers';
+import { ResponseData } from '../../types/app';
 
 @Injectable()
 export class PlanetsService {
@@ -55,9 +55,9 @@ export class PlanetsService {
     return pagination
       ? {
           count: pagination,
-          data: data.data.results.splice(0, pagination),
+          data: data.results.splice(0, pagination),
         }
-      : data.data;
+      : data;
   }
   async getPlanetById(id: string): Promise<Response> {
     const url = `${process.env.URL}/planets`;
@@ -67,10 +67,11 @@ export class PlanetsService {
       data = await fetch(`${url}/${id}`).then((response: Response) =>
         response.json(),
       );
+
       await saveToDb(`${url}/${id}`, data, this.cacheModel);
       return data;
     }
 
-    return data.data;
+    return data;
   }
 }
