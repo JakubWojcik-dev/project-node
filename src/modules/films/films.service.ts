@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Cache } from 'src/db/db.schema';
-import { findIndexInDb, saveToDb } from 'src/helpers';
-import { ConfigService } from '@nestjs/config';
+import { findIndexInDb, saveToDb, trimMessage } from 'src/helpers';
+import { ResponseData } from 'src/types/app';
 
 @Injectable()
 export class FilmsService {
@@ -11,16 +11,32 @@ export class FilmsService {
     private cacheModel: Model<Cache>,
   ) {}
 
-  async getFilms(pagination?: number): Promise<{ count: number; data: any[] }> {
+  putDataIntoArray(msg: string): any[] {
+    const words = msg.split(' ');
+    const filterWords = words
+      .map((word) => word.toLowerCase())
+      .filter((word) => word !== '');
+    // Count occurrences using an object
+    const wordsObject = {};
+
+    filterWords.forEach((word) => {
+      wordsObject[word] = (wordsObject[word] || 0) + 1;
+    });
+
+    const pairsOfArray = Object.entries(wordsObject);
+
+    return pairsOfArray;
+  }
+  async getFilms(pagination?: number): Promise<ResponseData> {
     const url = `${process.env.URL}/films`;
     let data = await findIndexInDb(url, this.cacheModel);
     if (!data) {
-      data = await fetch(`${url}/?page={$}`).then((response: Response) =>
+      data = await fetch(`${url}/?page=1`).then((response: Response) =>
         response.json(),
       );
       let resultsArray = [...data.results];
       let page = 1;
-      const count = data.count;
+      let count = data.count;
 
       do {
         page++;
@@ -32,6 +48,7 @@ export class FilmsService {
 
       if (pagination) {
         resultsArray = resultsArray.slice(0, pagination);
+        count = pagination;
       }
 
       await saveToDb(
@@ -63,11 +80,27 @@ export class FilmsService {
     const url = `${process.env.URL}/films`;
     let data = await findIndexInDb(url, this.cacheModel, id);
     if (!data) {
-      data = await fetch(url).then((response: Response) => response.json());
+      data = await fetch(`${url}/${id}`).then((response: Response) =>
+        response.json(),
+      );
       await saveToDb(`${url}/${id}`, data, this.cacheModel);
       return data;
     }
 
     return data.data;
+  }
+
+  async getFilmsOpeningCrawl(): Promise<any[]> {
+    const url = `${process.env.URL}/films`;
+    let data = await findIndexInDb(url, this.cacheModel);
+    if (!data) {
+      data = await fetch(url).then((response: Response) => response.json());
+      await saveToDb(url, data, this.cacheModel);
+      const msg = trimMessage(data);
+      return this.putDataIntoArray(msg);
+    }
+
+    const msg = trimMessage(data);
+    return this.putDataIntoArray(msg);
   }
 }
