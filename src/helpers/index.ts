@@ -3,16 +3,16 @@ export const findIndexInDb = async (
   connection: any,
   id?: string,
 ): Promise<any> => {
-  const url = `${uri}/${id}`;
-  console.log(url);
-  let cacheEntry = await connection.findOne({ url: id ? url : uri }).exec();
+  const url = id ? `${uri}/${id}` : uri;
+  let cacheEntry = await connection.findOne({ url: url }).exec();
 
-  if (!id) {
-    return cacheEntry ? cacheEntry : null;
+  if (!id || (id && cacheEntry)) {
+    return cacheEntry ? cacheEntry.data : null;
   }
   cacheEntry = await connection.findOne({ url: uri }).exec();
-
-  return cacheEntry ? cacheEntry.data[Number(id) - 1] : null;
+  console.log(cacheEntry);
+  //console.log('data123', cacheEntry.data.data[Number(id) - 1]);
+  return cacheEntry ? cacheEntry.data.data[Number(id) - 1] : null;
 };
 
 export const saveToDb = async (
