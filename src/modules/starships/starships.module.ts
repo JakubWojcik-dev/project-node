@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { StarshipsController } from './starships.controller';
 import { StarshipsService } from './starships.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { appProviders } from '../../app.providers';
 import { DatabaseModule } from '../../db/db.module';

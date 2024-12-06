@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
-import { Cache } from '../../db/db.schema';
+
 import { ResponseData } from '../../types/app';
-// import { CreateCacheDto } from './dto/createCat.dto';
 
 @Controller()
 export class VehiclesController {

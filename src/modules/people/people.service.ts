@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Cache } from '../../db/db.schema';
 import { findIndexInDb, saveToDb, trimMessage } from '../../helpers';
-import { ConfigService } from '@nestjs/config';
 import { ResponseData } from '../../types/app';
 
 @Injectable()

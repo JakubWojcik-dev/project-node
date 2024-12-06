@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { StarshipsService } from './starships.service';
 import { ResponseData } from '../../types/app';
 
